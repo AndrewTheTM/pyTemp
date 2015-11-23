@@ -69,4 +69,3 @@ else:
 	GPIO.output(18,GPIO.LOW)
 	print "Turned off"
 
-GPIO.output(18, GPIO.HIGH)
