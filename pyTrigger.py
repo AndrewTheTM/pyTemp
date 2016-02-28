@@ -51,7 +51,10 @@ if(len(status)>0):
 			#Holds to the lager temperature
 	else:
 		# Fast lager program
-		print "Fast lager", enlapsedTime
+		enlapsedHours = enlapsedTime / 60 / 60
+		print "Fast lager", enlapsedHours
+
+		sVal = 50
 
 else:
 	sVal = 70
