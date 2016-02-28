@@ -53,8 +53,32 @@ if(len(status)>0):
 		# Fast lager program
 		enlapsedHours = enlapsedTime / 60 / 60
 		print "Fast lager", enlapsedHours
-
-		sVal = 50
+		if enlapsedHours < 168:
+			sVal = 50
+		elif enlapsedHours < 180:
+			sVal = 55
+		elif enlapsedHours < 192:
+			sVal = 60
+		elif enlapsedHours < 204:
+			sVal = 65
+		elif enlapsedHours < 264:
+			sVal = 68
+		elif enlapsedHours < 276:
+			sVal = 63
+		elif enlapsedHours < 288:
+			sVal = 58
+		elif enlapsedHours < 300:
+			sVal = 53
+		elif enlapsedHours < 312:
+			sVal = 48
+		elif enlapsedHours < 324:
+			sVal = 43
+		elif enlapsedHours < 336:
+			sVal = 38
+		elif enlapsedHours < 348:
+			sVal = 33
+		else:
+			sVal = 32
 
 else:
 	sVal = 70
