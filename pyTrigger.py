@@ -29,27 +29,32 @@ if(len(status)>0):
 	cTime = time.time()
 	enlapsedTime = cTime-startTimeStamp
 
-	priTime = plan[0][2]*24*60*60
-	diaTime = plan[0][4]*24*60*60
-	lagTime = plan[0][6]*24*60*60
-	#print enlapsedTime
+	if profileName != "Fast Lager":
+		priTime = plan[0][2]*24*60*60
+		diaTime = plan[0][4]*24*60*60
+		lagTime = plan[0][6]*24*60*60
+		#print enlapsedTime
 
-	if(enlapsedTime<=priTime):
-		print "In Primary"
-		sVal = plan[0][3]
-	elif(enlapsedTime<=(priTime+diaTime)):
-		print "In diacetyl rest"
-		sVal = plan[0][5]
-	elif(enlapsedTime<=(priTime+diaTime+lagTime)):
-		print "In Lager"
-		sVal = plan[0][7]
+		if(enlapsedTime<=priTime):
+			print "In Primary"
+			sVal = plan[0][3]
+		elif(enlapsedTime<=(priTime+diaTime)):
+			print "In diacetyl rest"
+			sVal = plan[0][5]
+		elif(enlapsedTime<=(priTime+diaTime+lagTime)):
+			print "In Lager"
+			sVal = plan[0][7]
+		else:
+			print "past lager"
+			sVal = plan[0][7]
+			#Holds to the lager temperature
 	else:
-		print "past lager"
-		sVal = plan[0][7]
-		#Holds to the lager temperature
+		# Fast lager program
+		print "Fast lager", enlapsedTime
+
 else:
 	sVal = 70
-	
+
 print "Set to: " + str(sVal)
 
 # 2. get current temperature
@@ -68,4 +73,3 @@ if(tempF>sVal):
 else:
 	GPIO.output(18,GPIO.LOW)
 	print "Turned off"
-
