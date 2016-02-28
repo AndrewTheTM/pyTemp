@@ -28,6 +28,7 @@ if(len(status)>0):
 
 	cTime = time.time()
 	enlapsedTime = cTime-startTimeStamp
+	profileName = plan[0][1]
 
 	if profileName != "Fast Lager":
 		priTime = plan[0][2]*24*60*60
