@@ -20,7 +20,7 @@ status = cStatus.fetchall()
 if(len(status)>0):
 	eventID = status[0][0]
 	startTimeStamp = status[0][1] #timestamp in seconds
-	print startTimeStamp
+	#print startTimeStamp
 
 	cPlan = conn.cursor()
 	cPlan.execute("SELECT fermScheduleId, profileName, primaryDays, primaryTemp, diacetylRestDays, diacetylRestTemp, lagerDays, lagerTemp FROM fermSchedules WHERE fermScheduleId = ?",(eventID,))
@@ -32,7 +32,7 @@ if(len(status)>0):
 	priTime = plan[0][2]*24*60*60
 	diaTime = plan[0][4]*24*60*60
 	lagTime = plan[0][6]*24*60*60
-	print enlapsedTime
+	#print enlapsedTime
 
 	if(enlapsedTime<=priTime):
 		print "In Primary"
