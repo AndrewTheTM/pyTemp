@@ -15,6 +15,8 @@ GPIO.setwarnings(False)
 GPIO.setup(18, GPIO.OUT)
 GPIO.setup(24, GPIO.OUT)
 
+enlapsedHours = 0
+
 # 1. get current set point
 conn = sqlite3.connect(DATABASE_PATH)
 cStatus = conn.cursor()
@@ -88,7 +90,7 @@ if(len(status)>0):
 			sVal = 32
 
 else:
-	sVal = 68
+	sVal = -999
 
 print "Set to: " + str(sVal) + " Hours: " + str(enlapsedHours)
 
@@ -108,12 +110,12 @@ tempFKZ = 9.0 / 5.0 * valueKZ + 32.0
 print("Current Keezer Temp: {0}".format(tempFKZ))
 
 # 3. Determine what to do
-if(tempF>sVal):
+if(tempF>sVal and sVal != -999):
 	GPIO.output(24, GPIO.HIGH)
-	print "Turned on"
+	print "Ferm Chamber Turned on"
 else:
 	GPIO.output(24, GPIO.LOW)
-	print "Turned off"
+	print "Ferm Chamber Turned off"
 
 if tempFKZ > 39:
 	GPIO.output(18, GPIO.HIGH)
