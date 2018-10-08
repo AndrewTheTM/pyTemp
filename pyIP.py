@@ -31,3 +31,5 @@ headers = {
 files = {'file': ('encr.txt',enc)}
 
 response = requests.post(API_URL,files=files)
+
+print response.text;

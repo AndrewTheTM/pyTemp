@@ -3,13 +3,17 @@ import RPi.GPIO as GPIO
 import sqlite3
 import datetime
 import time
+import os
 
-DATABASE_PATH = '/var/www/db/fermpi.db'
-I2C_ADDRESS = 0x4a
+DATABASE_PATH = '/var/www/html/db/fermpi.db'
+I2C_ADDRESS = 0x4e
+I2C_KEEZER = 0x4a
+OUTFILE = '/var/www/html/current_temperature'
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
-GPIO.setup(18,GPIO.OUT)
+GPIO.setup(18, GPIO.OUT)
+GPIO.setup(24, GPIO.OUT)
 
 # 1. get current set point
 conn = sqlite3.connect(DATABASE_PATH)
@@ -29,12 +33,14 @@ if(len(status)>0):
 	cTime = time.time()
 	enlapsedTime = cTime-startTimeStamp
 	profileName = plan[0][1]
+	enlapsedHours = 0
 
 	if profileName != "Fast Lager":
 		priTime = plan[0][2]*24*60*60
 		diaTime = plan[0][4]*24*60*60
 		lagTime = plan[0][6]*24*60*60
 		#print enlapsedTime
+		enlapsedHours = enlapsedTime / 60 / 60
 
 		if(enlapsedTime<=priTime):
 			print "In Primary"
@@ -49,6 +55,7 @@ if(len(status)>0):
 			print "past lager"
 			sVal = plan[0][7]
 			#Holds to the lager temperature
+		print sVal
 	else:
 		# Fast lager program
 		enlapsedHours = enlapsedTime / 60 / 60
@@ -81,23 +88,40 @@ if(len(status)>0):
 			sVal = 32
 
 else:
-	sVal = 70
+	sVal = 68
 
-print "Set to: " + str(sVal)
+print "Set to: " + str(sVal) + " Hours: " + str(enlapsedHours)
 
 # 2. get current temperature
 # Read temperature from bus
 bus = smbus.SMBus(0)
-value = bus.read_byte_data(I2C_ADDRESS,0x00)
+value = bus.read_byte_data(I2C_ADDRESS, 0x00)
 if value > 127:
         value -= 256
 tempF = 9.0 / 5.0 * value + 32.0
-print "Current temp: " + str(tempF)
+print("Current temp: {0}".format(tempF))
+
+valueKZ = bus.read_byte_data(I2C_KEEZER, 0x00)
+if valueKZ > 127:
+	valueKZ -= 256
+tempFKZ = 9.0 / 5.0 * valueKZ + 32.0
+print("Current Keezer Temp: {0}".format(tempFKZ))
 
 # 3. Determine what to do
 if(tempF>sVal):
-	GPIO.output(18,GPIO.HIGH)
+	GPIO.output(24, GPIO.HIGH)
 	print "Turned on"
 else:
-	GPIO.output(18,GPIO.LOW)
+	GPIO.output(24, GPIO.LOW)
 	print "Turned off"
+
+if tempFKZ > 39:
+	GPIO.output(18, GPIO.HIGH)
+	print "Keezer Turned On"
+else:
+	GPIO.output(18, GPIO.LOW)
+	print "Keezer Turned Off"
+
+# 4. File for internal website
+with open(OUTFILE, 'w') as the_file:
+    the_file.write(str(tempF))
